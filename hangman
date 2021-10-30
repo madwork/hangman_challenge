@@ -5,6 +5,51 @@
 
 # frozen_string_literal: true
 
+class HangmanTemplate
+  attr_reader :hangman
+
+  def initialize(hangman)
+    @hangman = hangman
+  end
+
+  def initialization
+  end
+
+  def won
+  end
+
+  def lost
+  end
+
+  def correct
+  end
+
+  def incorrect
+  end
+end
+
+class BasicHangmanTemplate < HangmanTemplate
+  def initialization
+    "#{hangman.word.mask} life left: #{hangman.life}"
+  end
+
+  def won
+    "#{hangman.word.secret} YOU WIN!"
+  end
+
+  def lost
+    "#{hangman.word.mask} YOU LOSE!"
+  end
+
+  def correct
+    "#{hangman.word.mask} life left: #{hangman.life}"
+  end
+
+  def incorrect
+    "#{hangman.word.mask} life left: #{hangman.life} incorrect guesses: #{hangman.guesses}"
+  end
+end
+
 class Word
   attr_reader :secret
 
@@ -31,33 +76,34 @@ end
 class Hangman
   attr_reader :word, :guesses, :life
 
-  def initialize(secret, life = 6)
+  def initialize(secret, life = 6, template = BasicHangmanTemplate)
     @word = Word.new(secret)
     @guesses = ""
     @life = life
+    @render = template.new(self)
 
-    puts "#{word.mask} life left: #{life}"
+    puts @render.initialization
   end
 
   def guess(letter)
     if word.guess(letter)
       if word.completed?
-        puts "#{word.secret} YOU WIN!"
+        puts @render.won
       else
         if guesses.empty?
-          puts "#{word.mask} life left: #{life}"
+          puts @render.correct
         else
-          puts "#{word.mask} life left: #{life} incorrect guesses: #{guesses}"
+          puts @render.incorrect
         end
       end
     else
       @life -= 1
 
       if life.zero?
-        puts "#{word.mask} YOU LOSE!"
+        puts @render.lost
       else
         @guesses += letter
-        puts "#{word.mask} life left: #{life} incorrect guesses: #{guesses}"
+        puts @render.incorrect
       end
     end
   end

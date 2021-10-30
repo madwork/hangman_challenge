@@ -76,7 +76,7 @@ end
 class Hangman
   attr_reader :word, :guesses, :life
 
-  def initialize(word, life = 6, template = BasicHangmanTemplate)
+  def initialize(word, life: 6, template: HangmanTemplate)
     @word = word
     @guesses = ""
     @life = life
@@ -126,6 +126,6 @@ File.readlines(ARGV[0], chomp: true).each do |line|
     @hangman.guess(line)
   else
     word = Word.new(line)
-    @hangman = Hangman.new(word)
+    @hangman = Hangman.new(word, template: BasicHangmanTemplate)
   end
 end

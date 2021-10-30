@@ -3,6 +3,8 @@
 # https://github.com/jasonswett/hangman_challenge
 #
 
+# frozen_string_literal: true
+
 class Word
   attr_reader :secret
 
@@ -54,7 +56,7 @@ class Hangman
       if life.zero?
         puts "#{word.mask} YOU LOSE!"
       else
-        guesses << letter
+        @guesses += letter
         puts "#{word.mask} life left: #{life} incorrect guesses: #{guesses}"
       end
     end

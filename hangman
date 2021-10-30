@@ -50,6 +50,12 @@ class BasicHangmanTemplate < HangmanTemplate
   end
 end
 
+class PinkmanHangmanTemplate < BasicHangmanTemplate
+  def initialization
+    [super, "yo!"].join(' ')
+  end
+end
+
 class Word
   attr_reader :secret
 
@@ -109,12 +115,14 @@ class Hangman
   end
 end
 
-# hangman = Hangman.new("apple")
+# word = Word.new("apple", "_")
+# hangman = Hangman.new(word, template: BasicHangmanTemplate)
 # %w[a b q z e p l].each do |letter|
 #   hangman.guess(letter)
 # end
 
-# hangman = Hangman.new("quixotic")
+# word = Word.new("quixotic", "*")
+# hangman = Hangman.new(word, template: PinkmanHangmanTemplate)
 # %w[a e i o u l g p r].each do |letter|
 #   hangman.guess(letter)
 # end

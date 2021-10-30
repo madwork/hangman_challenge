@@ -1,7 +1,78 @@
 #!/usr/bin/ruby
-# The above can be replaced with whatever language you choose
-
-# Modify this file to create your hangman program.
 #
-# The input filename will come as an argument (see completeness_test).
-input_filename = ARGV[0]
+# https://github.com/jasonswett/hangman_challenge
+#
+
+class Word
+  attr_reader :secret, :letters
+
+  def initialize(secret)
+    @secret = secret
+    @letters = Array.new(secret.length) { "_" }
+  end
+
+  def guess(letter)
+    guessed = false
+    secret.each_char.with_index { |char, i| letters[i], guessed = char, true if char == letter }
+    guessed
+  end
+
+  def completed?
+    secret == letters.join
+  end
+end
+
+class Hangman
+  attr_reader :word, :guesses, :life
+
+  def initialize(secret, life = 6)
+    @word = Word.new(secret)
+    @guesses = Array.new
+    @life = life
+
+    puts "#{word.letters.join} life left: #{life}"
+  end
+
+  def guess(letter)
+    if word.guess(letter)
+      if word.completed?
+        puts "#{word.secret} YOU WIN!"
+      else
+        if guesses.empty?
+          puts "#{word.letters.join} life left: #{life}"
+        else
+          puts "#{word.letters.join} life left: #{life} incorrect guesses: #{guesses.join}"
+        end
+      end
+    else
+      @life -= 1
+
+      if life.zero?
+        puts "#{word.letters.join} YOU LOSE!"
+      else
+        guesses << letter
+        puts "#{word.letters.join} life left: #{life} incorrect guesses: #{guesses.join}"
+      end
+    end
+  end
+end
+
+# hangman = Hangman.new("apple")
+# %w[a b q z e p l].each do |letter|
+#   hangman.guess(letter)
+# end
+
+# hangman = Hangman.new("quixotic")
+# %w[a e i o u l g p r].each do |letter|
+#   hangman.guess(letter)
+# end
+
+File.readlines(ARGV[0], chomp: true).each do |line|
+  next if line.empty?
+
+  if line.length == 1
+    @hangman.guess(line)
+  else
+    @hangman = Hangman.new(line)
+  end
+end

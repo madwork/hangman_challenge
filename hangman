@@ -4,21 +4,25 @@
 #
 
 class Word
-  attr_reader :secret, :letters
+  attr_reader :secret
 
-  def initialize(secret)
+  def initialize(secret, char = "_")
     @secret = secret
-    @letters = Array.new(secret.length) { "_" }
+    @letters = Array.new(secret.length) { char }
   end
 
   def guess(letter)
     guessed = false
-    secret.each_char.with_index { |char, i| letters[i], guessed = char, true if char == letter }
+    secret.each_char.with_index { |char, i| @letters[i], guessed = char, true if char == letter }
     guessed
   end
 
   def completed?
-    secret == letters.join
+    secret == mask
+  end
+
+  def mask
+    @letters.join
   end
 end
 
@@ -27,10 +31,10 @@ class Hangman
 
   def initialize(secret, life = 6)
     @word = Word.new(secret)
-    @guesses = Array.new
+    @guesses = ""
     @life = life
 
-    puts "#{word.letters.join} life left: #{life}"
+    puts "#{word.mask} life left: #{life}"
   end
 
   def guess(letter)
@@ -39,19 +43,19 @@ class Hangman
         puts "#{word.secret} YOU WIN!"
       else
         if guesses.empty?
-          puts "#{word.letters.join} life left: #{life}"
+          puts "#{word.mask} life left: #{life}"
         else
-          puts "#{word.letters.join} life left: #{life} incorrect guesses: #{guesses.join}"
+          puts "#{word.mask} life left: #{life} incorrect guesses: #{guesses}"
         end
       end
     else
       @life -= 1
 
       if life.zero?
-        puts "#{word.letters.join} YOU LOSE!"
+        puts "#{word.mask} YOU LOSE!"
       else
         guesses << letter
-        puts "#{word.letters.join} life left: #{life} incorrect guesses: #{guesses.join}"
+        puts "#{word.mask} life left: #{life} incorrect guesses: #{guesses}"
       end
     end
   end

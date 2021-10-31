@@ -42,7 +42,11 @@ class BasicHangmanTemplate < HangmanTemplate
   end
 
   def correct
-    "#{hangman.word.mask} life left: #{hangman.life}"
+    if hangman.guesses.empty?
+      "#{hangman.word.mask} life left: #{hangman.life}"
+    else
+      "#{hangman.word.mask} life left: #{hangman.life} incorrect guesses: #{hangman.guesses}"
+    end
   end
 
   def incorrect
@@ -96,11 +100,7 @@ class Hangman
       if word.completed?
         puts @render.won
       else
-        if guesses.empty?
-          puts @render.correct
-        else
-          puts @render.incorrect
-        end
+        puts @render.correct
       end
     else
       @life -= 1
